@@ -14,6 +14,7 @@
     --dim:rgba(242,230,216,.55);
     --gold:#F0A868;
     --coral:#E07856;
+    --rose:#C25048;
     --cream:#F2E6D8;
     --card:rgba(255,235,210,.045);
     --line:rgba(255,220,180,.14);
@@ -27,7 +28,6 @@
     overflow-x:hidden;
     min-height:100vh;
   }
-  /* 环境暗角 */
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
     background:radial-gradient(120% 90% at 50% 42%, transparent 30%, rgba(0,0,0,.55) 100%);
@@ -54,26 +54,27 @@
   /* 许愿场景 */
   .scene{display:block;margin:18px auto 0;width:min(460px,92vw);}
   .flame{transform-origin:center bottom;animation:flick 1.1s ease-in-out infinite;}
-  .flame.f2{animation-delay:-.35s;}
-  .flame.f3{animation-delay:-.7s;}
-  .flame.f4{animation-delay:-.15s;}
-  .flame.f5{animation-delay:-.55s;}
+  .flame.f2{animation-delay:-.45s;}
   @keyframes flick{
     0%,100%{transform:scale(1) rotate(0deg);}
     30%{transform:scale(1.1,.92) rotate(-3deg);}
     60%{transform:scale(.92,1.08) rotate(3deg);}
   }
   .glowp{transform-origin:center;animation:pulse 2.2s ease-in-out infinite;}
-  .glowp.g2{animation-delay:-.7s;}
-  .glowp.g3{animation-delay:-1.4s;}
-  .glowp.g4{animation-delay:-.4s;}
-  .glowp.g5{animation-delay:-1.1s;}
+  .glowp.g2{animation-delay:-1s;}
   @keyframes pulse{
     0%,100%{opacity:.55;transform:scale(1);}
     50%{opacity:.95;transform:scale(1.18);}
   }
+  .digit{
+    font-family:"Archivo Black","Arial Black",sans-serif;
+    font-size:44px;
+    fill:#F5B942;
+    stroke:#8A5A20;
+    stroke-width:1.1;
+    filter:drop-shadow(0 0 7px rgba(245,185,66,.55));
+  }
 
-  /* 倒计时 */
   .countdown{
     margin-top:34px;display:grid;grid-template-columns:repeat(4,1fr);
     gap:clamp(8px,2vw,18px);
@@ -159,10 +160,10 @@
       <p class="sub">农历 四月 初十 · 愿望正在酝酿中</p>
     </header>
 
-    <!-- 许愿场景：女孩在蛋糕前闭眼许愿 -->
+    <!-- 许愿场景：参照照片手绘 —— 黑长发、红上衣、双手在下巴前、金色数字蜡烛 -->
     <svg class="scene" viewBox="0 0 420 340" aria-label="女孩在生日蛋糕前许愿的场景">
       <defs>
-        <radialGradient id="haloGrad" cx="50%" cy="68%" r="55%">
+        <radialGradient id="haloGrad" cx="50%" cy="66%" r="55%">
           <stop offset="0%" stop-color="#F0A868" stop-opacity=".34"/>
           <stop offset="45%" stop-color="#E07856" stop-opacity=".14"/>
           <stop offset="100%" stop-color="#E07856" stop-opacity="0"/>
@@ -179,81 +180,68 @@
       </defs>
 
       <!-- 烛光主光晕 -->
-      <ellipse cx="210" cy="232" rx="185" ry="125" fill="url(#haloGrad)"/>
+      <ellipse cx="210" cy="228" rx="185" ry="125" fill="url(#haloGrad)"/>
 
       <!-- 女孩 -->
       <g>
-        <!-- 身体（裙子） -->
-        <path d="M152 272 C152 216 176 196 210 196 C244 196 268 216 268 272 Z" fill="#A85D6E"/>
-        <path d="M152 272 C152 216 176 196 210 196 C244 196 268 216 268 272" fill="none" stroke="rgba(255,215,170,.25)" stroke-width="1.5"/>
+        <!-- 长发（及胸黑发，照片同款） -->
+        <ellipse cx="210" cy="140" rx="46" ry="44" fill="#241A16"/>
+        <path d="M166 136 C156 182 162 226 178 254 L198 246 C187 220 184 184 189 150 Z" fill="#241A16"/>
+        <path d="M254 136 C264 182 258 226 242 254 L222 246 C233 220 236 184 231 150 Z" fill="#241A16"/>
+        <!-- 红上衣（照片同款玫瑰红） -->
+        <path d="M150 276 C150 218 176 198 210 198 C244 198 270 218 270 276 Z" fill="#C25048"/>
+        <path d="M197 200 L210 222 L223 200" fill="none" stroke="#8A3630" stroke-width="3" stroke-linecap="round"/>
+        <path d="M150 276 C150 218 176 198 210 198 C244 198 270 218 270 276" fill="none" stroke="rgba(255,215,170,.22)" stroke-width="1.5"/>
         <!-- 脖子 -->
-        <rect x="203" y="172" width="14" height="26" rx="6" fill="#F2C9A8"/>
-        <!-- 后发 -->
-        <ellipse cx="210" cy="124" rx="42" ry="40" fill="#4A3128"/>
-        <path d="M172 128 C166 156 170 178 180 192 L190 188 C182 172 180 152 184 136 Z" fill="#4A3128"/>
-        <path d="M248 128 C254 156 250 178 240 192 L230 188 C238 172 240 152 236 136 Z" fill="#4A3128"/>
+        <rect x="203" y="174" width="14" height="26" rx="6" fill="#EFC09C"/>
         <!-- 脸 -->
-        <circle cx="210" cy="136" r="32" fill="#F2C9A8"/>
+        <circle cx="210" cy="140" r="30" fill="#F2C9A8"/>
         <!-- 刘海 -->
-        <path d="M178 136 C178 110 196 100 210 100 C224 100 242 110 242 136 C236 118 226 112 210 112 C194 112 184 118 178 136 Z" fill="#4A3128"/>
-        <!-- 闭眼（许愿中） -->
-        <path d="M193 140 q7 6 14 0" fill="none" stroke="#4A3128" stroke-width="2.6" stroke-linecap="round"/>
-        <path d="M213 140 q7 6 14 0" fill="none" stroke="#4A3128" stroke-width="2.6" stroke-linecap="round"/>
-        <!-- 睫毛 -->
-        <path d="M194 145 l-3 3 M206 145 l2 3.4 M214 145 l-2 3.4 M226 145 l3 3" stroke="#4A3128" stroke-width="1.6" stroke-linecap="round"/>
+        <path d="M180 140 C180 112 196 102 210 102 C224 102 240 112 240 140 C234 120 224 114 210 114 C196 114 186 120 180 140 Z" fill="#241A16"/>
+        <!-- 闭眼（许愿中）+ 睫毛 -->
+        <path d="M193 144 q7 6 14 0" fill="none" stroke="#241A16" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M213 144 q7 6 14 0" fill="none" stroke="#241A16" stroke-width="2.6" stroke-linecap="round"/>
+        <path d="M194 149 l-3 3 M206 149 l2 3.4 M214 149 l-2 3.4 M226 149 l3 3" stroke="#241A16" stroke-width="1.6" stroke-linecap="round"/>
         <!-- 腮红 -->
-        <ellipse cx="190" cy="151" rx="5.5" ry="3.6" fill="#E07856" opacity=".45"/>
-        <ellipse cx="230" cy="151" rx="5.5" ry="3.6" fill="#E07856" opacity=".45"/>
+        <ellipse cx="190" cy="155" rx="5.5" ry="3.6" fill="#E07856" opacity=".5"/>
+        <ellipse cx="230" cy="155" rx="5.5" ry="3.6" fill="#E07856" opacity=".5"/>
         <!-- 微笑 -->
-        <path d="M203 156 q7 5 14 0" fill="none" stroke="#B4586B" stroke-width="2.4" stroke-linecap="round"/>
-        <!-- 合掌的手 -->
-        <ellipse cx="199" cy="182" rx="9" ry="14" fill="#F2C9A8" transform="rotate(22 199 182)"/>
-        <ellipse cx="221" cy="182" rx="9" ry="14" fill="#F2C9A8" transform="rotate(-22 221 182)"/>
-        <path d="M210 170 L210 196" stroke="rgba(74,49,46,.35)" stroke-width="1.6"/>
+        <path d="M203 160 q7 5 14 0" fill="none" stroke="#B4586B" stroke-width="2.4" stroke-linecap="round"/>
+        <!-- 双手在下巴前（照片同款姿势） -->
+        <ellipse cx="200" cy="190" rx="10" ry="15" fill="#F2C9A8" transform="rotate(24 200 190)"/>
+        <ellipse cx="220" cy="190" rx="10" ry="15" fill="#F2C9A8" transform="rotate(-24 220 190)"/>
+        <path d="M204 178 q6 5 12 0" stroke="rgba(74,49,46,.3)" stroke-width="1.4" fill="none"/>
         <!-- 袖口 -->
-        <path d="M188 196 q22 12 44 0 l-4 10 q-18 8 -36 0 Z" fill="#8A4B5E"/>
+        <path d="M186 208 q24 12 48 0 l-5 12 q-19 8 -38 0 Z" fill="#A8433C"/>
       </g>
 
       <!-- 桌子 -->
-      <rect x="0" y="272" width="420" height="68" fill="#241812"/>
-      <line x1="0" y1="272" x2="420" y2="272" stroke="rgba(240,168,104,.28)" stroke-width="1.5"/>
+      <rect x="0" y="276" width="420" height="64" fill="#241812"/>
+      <line x1="0" y1="276" x2="420" y2="276" stroke="rgba(240,168,104,.28)" stroke-width="1.5"/>
 
-      <!-- 蛋糕 -->
-      <ellipse cx="210" cy="272" rx="98" ry="9" fill="#2A1E16" stroke="rgba(240,168,104,.35)" stroke-width="1.5"/>
-      <!-- 下层 -->
-      <rect x="128" y="220" width="164" height="50" rx="10" fill="#D97B52"/>
-      <path d="M128 232 q14 13 27 0 t27 0 t27 0 t27 0 t27 0 t27 0" fill="none" stroke="#F2E6D8" stroke-width="3.2" stroke-linecap="round"/>
-      <rect x="128" y="220" width="164" height="50" rx="10" fill="none" stroke="rgba(255,215,170,.3)" stroke-width="1.2"/>
-      <!-- 上层 -->
-      <rect x="160" y="182" width="100" height="42" rx="9" fill="#F2E6D8"/>
-      <path d="M160 193 q13 12 25 0 t25 0 t25 0 t25 0" fill="none" stroke="#D97B52" stroke-width="3" stroke-linecap="round"/>
-      <!-- 樱桃 -->
-      <circle cx="178" cy="179" r="5.5" fill="#B4586B"/>
-      <circle cx="210" cy="176" r="5.5" fill="#B4586B"/>
-      <circle cx="242" cy="179" r="5.5" fill="#B4586B"/>
-      <circle cx="176.5" cy="177" r="1.4" fill="#F2E6D8" opacity=".8"/>
-      <circle cx="208.5" cy="174" r="1.4" fill="#F2E6D8" opacity=".8"/>
+      <!-- 蛋糕（蜜桃色裱花奶油，照片同款风格） -->
+      <ellipse cx="210" cy="276" rx="108" ry="10" fill="#2A1E16" stroke="rgba(240,168,104,.35)" stroke-width="1.5"/>
+      <rect x="118" y="226" width="184" height="50" rx="12" fill="#F5E3D0"/>
+      <rect x="118" y="226" width="184" height="50" rx="12" fill="none" stroke="rgba(255,215,170,.28)" stroke-width="1.2"/>
+      <!-- 顶部奶油滴边 -->
+      <path d="M120 237 q13 12 26 0 t26 0 t26 0 t26 0 t26 0 t26 0 t24 0" fill="none" stroke="#FBF0E2" stroke-width="3.4" stroke-linecap="round"/>
+      <!-- 蜜桃裱花同心圆 -->
+      <g fill="none" stroke="#EFA989" stroke-width="7" stroke-dasharray="2 8" stroke-linecap="round">
+        <circle cx="210" cy="253" r="38"/>
+        <circle cx="210" cy="253" r="26" opacity=".75"/>
+        <circle cx="210" cy="253" r="14" opacity=".5"/>
+      </g>
 
-      <!-- 蜡烛 × 5 -->
-      <g>
-        <!-- 烛身 -->
-        <rect x="176" y="152" width="7" height="26" rx="3" fill="#E07856"/>
-        <rect x="193" y="146" width="7" height="32" rx="3" fill="#7A9E7E"/>
-        <rect x="210" y="142" width="7" height="36" rx="3" fill="#E07856"/>
-        <rect x="227" y="146" width="7" height="32" rx="3" fill="#7A9E7E"/>
-        <rect x="244" y="152" width="7" height="26" rx="3" fill="#E07856"/>
-        <!-- 光晕 -->
-        <circle class="glowp"    cx="179.5" cy="142" r="17" fill="url(#flameGlow)"/>
-        <circle class="glowp g2" cx="196.5" cy="136" r="19" fill="url(#flameGlow)"/>
-        <circle class="glowp g3" cx="213.5" cy="132" r="22" fill="url(#flameGlow)"/>
-        <circle class="glowp g4" cx="230.5" cy="136" r="19" fill="url(#flameGlow)"/>
-        <circle class="glowp g5" cx="247.5" cy="142" r="17" fill="url(#flameGlow)"/>
-        <!-- 火苗 -->
-        <ellipse class="flame"    cx="179.5" cy="143" rx="3.6" ry="6.6" fill="#FFD9A0"/>
-        <ellipse class="flame f2" cx="196.5" cy="137" rx="3.8" ry="7.2" fill="#FFD9A0"/>
-        <ellipse class="flame f3" cx="213.5" cy="133" rx="4.2" ry="8"   fill="#FFD9A0"/>
-        <ellipse class="flame f4" cx="230.5" cy="137" rx="3.8" ry="7.2" fill="#FFD9A0"/>
-        <ellipse class="flame f5" cx="247.5" cy="143" rx="3.6" ry="6.6" fill="#FFD9A0"/>
+      <!-- 金色数字蜡烛（数字由 app.js 按周岁自动更新） -->
+      <g id="tensGroup">
+        <circle class="glowp" cx="196" cy="176" r="18" fill="url(#flameGlow)"/>
+        <ellipse class="flame" cx="196" cy="177" rx="4" ry="7.4" fill="#FFD9A0"/>
+        <text id="ageTens" class="digit" x="196" y="224" text-anchor="middle">2</text>
+      </g>
+      <g id="onesGroup">
+        <circle class="glowp g2" cx="226" cy="176" r="18" fill="url(#flameGlow)"/>
+        <ellipse class="flame f2" cx="226" cy="177" rx="4" ry="7.4" fill="#FFD9A0"/>
+        <text id="ageOnes" class="digit" x="226" y="224" text-anchor="middle">8</text>
       </g>
 
       <!-- 压暗四周 -->

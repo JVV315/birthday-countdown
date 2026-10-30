@@ -24,10 +24,26 @@
   const target = nextBirthday(new Date());
   const prev = prevBirthday(new Date());
 
+  /* 周岁数字蜡烛：1999 年出生，每年自动 +1 */
+  const BIRTH_YEAR = 1999;
+  const age = Math.max(1, target.getFullYear() - BIRTH_YEAR);
+  (function setAgeCandles(){
+    const s = String(age);
+    const tensEl = document.getElementById('ageTens');
+    const onesEl = document.getElementById('ageOnes');
+    onesEl.textContent = s.slice(-1);
+    if(s.length > 1){
+      tensEl.textContent = s[0];
+    }else{
+      document.getElementById('tensGroup').style.display = 'none';
+      document.getElementById('onesGroup').setAttribute('transform','translate(-15,0)');
+    }
+  })();
+
   document.getElementById('targetText').innerHTML =
     '下一个农历生日是 <strong>' +
     target.getFullYear() + ' 年 ' + (target.getMonth()+1) + ' 月 ' + target.getDate() + ' 日' +
-    '（星期' + WEEK[target.getDay()] + '）</strong>';
+    '（星期' + WEEK[target.getDay()] + '）· 届时满 ' + age + ' 周岁</strong>';
 
   const elD=document.getElementById('d'), elH=document.getElementById('h'),
         elM=document.getElementById('m'), elS=document.getElementById('s'),
