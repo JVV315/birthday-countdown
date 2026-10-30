@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>生日倒计时 · 农历四月初十</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Noto+Serif+SC:wght@600;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F7EDE2;
+    --coral:#F5CAC3;
+    --sage:#84A59D;
+    --terra:#E07856;
+    --gold:#F2CC8F;
+    --ink:#4A342E;
+    --ink-soft:#7A6157;
+    --line:rgba(74,52,46,.16);
+    --ease-motion:cubic-bezier(.2,1,.2,1);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--cream);
+    color:var(--ink);
+    font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+    overflow-x:hidden;
+    min-height:100vh;
+    position:relative;
+  }
+  /* 纸纹 */
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+    opacity:.5;mix-blend-mode:multiply;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E");
+  }
+  main{position:relative;z-index:2;}
+
+  /* 彩旗 */
+  .bunting{position:absolute;top:0;left:0;width:100%;z-index:3;pointer-events:none;}
+
+  .wrap{max-width:960px;margin:0 auto;padding:0 24px;}
+
+  /* 顶部小标签 */
+  header{padding:110px 0 8px;text-align:center;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:10px;
+    font-size:13px;letter-spacing:.35em;color:var(--ink-soft);
+    text-transform:uppercase;
+  }
+  .eyebrow::before,.eyebrow::after{
+    content:"";width:34px;height:1px;background:var(--line);
+  }
+
+  h1{
+    font-family:"Kaiti SC","STKaiti","KaiTi","Noto Serif SC",serif;
+    font-weight:900;
+    font-size:clamp(44px,8vw,88px);
+    line-height:1.15;
+    margin-top:18px;
+    letter-spacing:.04em;
+  }
+  h1 .accent{color:var(--terra);}
+  .sub{
+    margin-top:14px;font-size:15px;color:var(--ink-soft);letter-spacing:.14em;
+  }
+
+  /* 倒计时 */
+  .countdown{
+    margin-top:56px;
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:clamp(8px,2vw,20px);
+  }
+  .cell{
+    background:#FFFBF4;
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:clamp(18px,3.5vw,34px) 8px;
+    text-align:center;
+    transition:transform .3s var(--ease-motion), box-shadow .3s var(--ease-motion);
+  }
+  .cell:hover{
+    transform:translateY(-6px);
+    box-shadow:0 18px 40px -18px rgba(74,52,46,.35);
+  }
+  .num{
+    font-family:"Archivo Black","Arial Black",sans-serif;
+    font-size:clamp(34px,7vw,72px);
+    line-height:1;
+    font-variant-numeric:tabular-nums;
+  }
+  .unit{
+    margin-top:10px;font-size:13px;letter-spacing:.4em;color:var(--ink-soft);
+    text-indent:.4em;
+  }
+  .cell.days .num{color:var(--terra);}
+  .cell.hours .num{color:var(--sage);}
+  .cell.mins .num{color:#C98A2D;}
+  .cell.secs .num{color:#B4586B;}
+
+  .target{
+    margin-top:34px;text-align:center;font-size:15px;color:var(--ink-soft);
+    letter-spacing:.1em;
+  }
+  .target strong{color:var(--ink);font-weight:600;}
+
+  /* 进度 */
+  .progress-block{margin-top:44px;}
+  .progress-label{
+    display:flex;justify-content:space-between;font-size:12.5px;
+    color:var(--ink-soft);letter-spacing:.12em;margin-bottom:8px;
+  }
+  .track{height:10px;border-radius:99px;background:rgba(74,52,46,.09);overflow:hidden;}
+  .fill{
+    height:100%;width:0%;border-radius:99px;
+    background:linear-gradient(90deg,var(--sage),var(--gold),var(--terra));
+    transition:width 1.2s var(--ease-motion);
+  }
+
+  /* 里程碑 */
+  .milestones{
+    margin-top:44px;display:grid;grid-template-columns:repeat(4,1fr);gap:12px;
+  }
+  .chip{
+    border:1px dashed var(--line);border-radius:14px;
+    padding:16px 8px;text-align:center;background:rgba(255,251,244,.6);
+  }
+  .chip b{
+    display:block;font-family:"Archivo Black",sans-serif;font-size:22px;
+    color:var(--terra);font-variant-numeric:tabular-nums;
+  }
+  .chip span{font-size:12px;color:var(--ink-soft);letter-spacing:.2em;}
+
+  /* 蛋糕 & 气球 */
+  .scene{margin-top:56px;text-align:center;position:relative;height:300px;}
+  .balloon{position:absolute;animation:floaty 6s ease-in-out infinite;}
+  .balloon.b1{left:6%;top:40px;animation-delay:0s;}
+  .balloon.b2{right:8%;top:80px;animation-delay:-2.2s;transform:scale(.82);}
+  .balloon.b3{left:16%;top:120px;animation-delay:-4s;transform:scale(.62);}
+  @keyframes floaty{
+    0%,100%{translate:0 0;rotate:-2deg;}
+    50%{translate:0 -22px;rotate:3deg;}
+  }
+  .cake{width:min(320px,70vw);}
+
+  /* 蜡烛火苗 */
+  .flame{
+    transform-origin:center bottom;
+    animation:flicker 1.1s ease-in-out infinite;
+  }
+  .flame.f2{animation-delay:-.3s;}
+  .flame.f3{animation-delay:-.7s;}
+  @keyframes flicker{
+    0%,100%{transform:scale(1) rotate(0deg);opacity:1;}
+    30%{transform:scale(1.08,.94) rotate(-3deg);opacity:.9;}
+    60%{transform:scale(.94,1.06) rotate(3deg);}
+  }
+
+  .blessing{
+    margin:44px auto 0;max-width:640px;text-align:center;
+    font-family:"Kaiti SC","STKaiti","KaiTi","Noto Serif SC",serif;
+    font-size:clamp(17px,2.6vw,21px);line-height:2;color:var(--ink-soft);
+  }
+  .blessing em{font-style:normal;color:var(--terra);}
+
+  footer{
+    margin-top:64px;padding:26px 0 40px;text-align:center;
+    font-size:12px;color:var(--ink-soft);letter-spacing:.28em;
+  }
+
+  /* 生日当天 */
+  .hbd{
+    display:none;margin-top:52px;text-align:center;
+  }
+  body.is-today .hbd{display:block;}
+  body.is-today .countdown,body.is-today .progress-block,body.is-today .milestones{display:none;}
+  .hbd .big{
+    font-family:"Kaiti SC","STKaiti","KaiTi","Noto Serif SC",serif;
+    font-size:clamp(40px,9vw,96px);font-weight:900;color:var(--terra);
+    letter-spacing:.08em;
+  }
+  .hbd p{margin-top:14px;color:var(--ink-soft);letter-spacing:.2em;}
+
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:50;}
+  .hint{margin-top:20px;text-align:center;font-size:12px;color:var(--ink-soft);letter-spacing:.2em;opacity:.75;}
+
+  @media (max-width:560px){
+    .milestones{grid-template-columns:repeat(2,1fr);}
+    header{padding-top:96px;}
+  }
+</style>
+</head>
+<body>
+
+<svg class="bunting" viewBox="0 0 1200 90" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0,8 Q600,70 1200,8" fill="none" stroke="#4A342E" stroke-width="1.4" opacity=".55"/>
+  <g id="flags"></g>
+</svg>
+
+<canvas id="confetti"></canvas>
+
+<main>
+  <div class="wrap">
+
+    <header>
+      <span class="eyebrow">LUNAR BIRTHDAY COUNTDOWN</span>
+      <h1>亲爱的朋友<br><span class="accent">生日快乐</span>倒计时</h1>
+      <p class="sub">农历 四月 初十 · 每年公历日期都不同，页面会自动换算</p>
+    </header>
+
+    <section class="countdown" aria-label="倒计时">
+      <div class="cell days"><div class="num" id="d">--</div><div class="unit">天</div></div>
+      <div class="cell hours"><div class="num" id="h">--</div><div class="unit">时</div></div>
+      <div class="cell mins"><div class="num" id="m">--</div><div class="unit">分</div></div>
+      <div class="cell secs"><div class="num" id="s">--</div><div class="unit">秒</div></div>
+    </section>
+
+    <div class="hbd">
+      <div class="big">今天就是生日！</div>
+      <p>快去送上祝福吧</p>
+    </div>
+
+    <p class="target" id="targetText">正在换算农历日期…</p>
+
+    <section class="progress-block">
+      <div class="progress-label"><span>本轮等待进度</span><span id="pct">0%</span></div>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </section>
+
+    <section class="milestones" aria-label="换算">
+      <div class="chip"><b id="wks">–</b><span>约等于 周</span></div>
+      <div class="chip"><b id="hrs">–</b><span>约等于 小时</span></div>
+      <div class="chip"><b id="sleeps">–</b><span>睡多少个觉</span></div>
+      <div class="chip"><b id="cups">–</b><span>够喝多少杯奶茶</span></div>
+    </section>
+
+    <div class="scene">
+      <svg class="balloon b1" width="54" height="86" viewBox="0 0 54 86">
+        <path d="M27 2C12 2 4 15 4 29c0 16 13 28 23 28s23-12 23-28C50 15 42 2 27 2z" fill="#F5CAC3"/>
+        <path d="M27 57l-4 7h8z" fill="#E07856"/>
+        <path d="M27 64c-3 6 3 9 0 15" stroke="#4A342E" stroke-width="1.2" fill="none"/>
+      </svg>
+      <svg class="balloon b2" width="54" height="86" viewBox="0 0 54 86">
+        <path d="M27 2C12 2 4 15 4 29c0 16 13 28 23 28s23-12 23-28C50 15 42 2 27 2z" fill="#84A59D"/>
+        <path d="M27 57l-4 7h8z" fill="#4A342E"/>
+        <path d="M27 64c3 6-3 9 0 15" stroke="#4A342E" stroke-width="1.2" fill="none"/>
+      </svg>
+      <svg class="balloon b3" width="54" height="86" viewBox="0 0 54 86">
+        <path d="M27 2C12 2 4 15 4 29c0 16 13 28 23 28s23-12 23-28C50 15 42 2 27 2z" fill="#F2CC8F"/>
+        <path d="M27 57l-4 7h8z" fill="#E07856"/>
+        <path d="M27 64c-2 7 2 9 0 16" stroke="#4A342E" stroke-width="1.2" fill="none"/>
+      </svg>
+
+      <svg class="cake" viewBox="0 0 320 240" aria-hidden="true">
+        <!-- 托盘 -->
+        <ellipse cx="160" cy="222" rx="120" ry="10" fill="none" stroke="#4A342E" stroke-width="2"/>
+        <!-- 下层 -->
+        <rect x="70" y="160" width="180" height="58" rx="10" fill="#F5CAC3"/>
+        <path d="M70 172 q15 14 30 0 t30 0 t30 0 t30 0 t30 0 t30 0" fill="none" stroke="#E07856" stroke-width="3" stroke-linecap="round"/>
+        <!-- 上层 -->
+        <rect x="100" y="108" width="120" height="56" rx="10" fill="#F7EDE2" stroke="#4A342E" stroke-width="1.6"/>
+        <path d="M100 120 q15 13 30 0 t30 0 t30 0 t30 0" fill="none" stroke="#84A59D" stroke-width="3" stroke-linecap="round"/>
+        <!-- 蜡烛 -->
+        <g>
+          <rect x="130" y="72" width="8" height="38" rx="3" fill="#E07856"/>
+          <rect x="156" y="66" width="8" height="44" rx="3" fill="#84A59D"/>
+          <rect x="182" y="72" width="8" height="38" rx="3" fill="#E07856"/>
+          <ellipse class="flame f1" cx="134" cy="62" rx="5" ry="9" fill="#F2CC8F" stroke="#E07856" stroke-width="1.4"/>
+          <ellipse class="flame f2" cx="160" cy="56" rx="5" ry="9" fill="#F2CC8F" stroke="#E07856" stroke-width="1.4"/>
+          <ellipse class="flame f3" cx="186" cy="62" rx="5" ry="9" fill="#F2CC8F" stroke="#E07856" stroke-width="1.4"/>
+        </g>
+        <!-- 樱桃 -->
+        <circle cx="118" cy="104" r="6" fill="#B4586B"/>
+        <circle cx="160" cy="100" r="6" fill="#B4586B"/>
+        <circle cx="202" cy="104" r="6" fill="#B4586B"/>
+      </svg>
+    </div>
+
+    <p class="blessing">
+      愿你新的一岁，<em>平安喜乐</em>，<br>
+      所求皆如愿，所行化坦途。
+    </p>
+
+    <p class="hint">点按页面任意处，撒一把彩带</p>
+
+    <footer>农历四月十 · 岁岁常欢愉</footer>
+  </div>
+</main>
+
+<script src="lunar.js"></script>
+<script>
+(function(){
+  "use strict";
+
+  /* ---------- 彩旗 ---------- */
+  (function makeFlags(){
+    const g = document.getElementById('flags');
+    const colors = ['#F5CAC3','#84A59D','#F2CC8F','#E07856'];
+    const N = 16;
+    for(let i=0;i<N;i++){
+      const t = i/(N-1);
+      const x = t*1200;
+      const y = 8 + 62*4*t*(1-t); // 沿线弧度的抛物线近似
+      const p = document.createElementNS('http://www.w3.org/2000/svg','path');
+      const w=30, h=40;
+      p.setAttribute('d',`M${x-w/2},${y} L${x+w/2},${y} L${x},${y+h} Z`);
+      p.setAttribute('fill', colors[i%4]);
+      p.setAttribute('opacity','.92');
+      g.appendChild(p);
+    }
+  })();
+
+  /* ---------- 农历生日换算 ---------- */
+  function nextBirthday(now){
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    for(let y=now.getFullYear(); y<=now.getFullYear()+1; y++){
+      const solar = Lunar.fromYmd(y, 4, 10).getSolar();
+      const d = new Date(solar.getYear(), solar.getMonth()-1, solar.getDay());
+      if(d >= today) return d;
+    }
+    return null;
+  }
+  function prevBirthday(now){
+    for(let y=now.getFullYear(); y>=now.getFullYear()-1; y--){
+      const solar = Lunar.fromYmd(y, 4, 10).getSolar();
+      const d = new Date(solar.getYear(), solar.getMonth()-1, solar.getDay());
+      if(d < new Date(now.getFullYear(), now.getMonth(), now.getDate())) return d;
+    }
+    return null;
+  }
+
+  const WEEK = ['日','一','二','三','四','五','六'];
+  const target = nextBirthday(new Date());
+  const prev = prevBirthday(new Date());
+
+  document.getElementById('targetText').innerHTML =
+    '下一个农历生日是 <strong>' +
+    target.getFullYear() + ' 年 ' + (target.getMonth()+1) + ' 月 ' + target.getDate() + ' 日' +
+    '（星期' + WEEK[target.getDay()] + '）</strong>';
+
+  const elD=document.getElementById('d'), elH=document.getElementById('h'),
+        elM=document.getElementById('m'), elS=document.getElementById('s'),
+        fill=document.getElementById('fill'), pct=document.getElementById('pct');
+
+  const pad = n => String(n).padStart(2,'0');
+
+  function tick(){
+    const now = new Date();
+    const end = new Date(target.getFullYear(), target.getMonth(), target.getDate(), 0,0,0);
+    let diff = end - now;
+    if(diff <= 0 && diff > -86400000){
+      document.body.classList.add('is-today');
+      if(!tick.celebrating){ tick.celebrating = true; celebrate(); }
+      return;
+    }
+    if(diff <= 0){ location.reload(); return; }
+    const dd = Math.floor(diff/86400000); diff -= dd*86400000;
+    const hh = Math.floor(diff/3600000);  diff -= hh*3600000;
+    const mm = Math.floor(diff/60000);    diff -= mm*60000;
+    const ss = Math.floor(diff/1000);
+    elD.textContent = dd; elH.textContent = pad(hh);
+    elM.textContent = pad(mm); elS.textContent = pad(ss);
+
+    // 进度
+    const span = end - prev;
+    const p = Math.min(100, Math.max(0, (now - prev)/span*100));
+    fill.style.width = p.toFixed(2) + '%';
+    pct.textContent = p.toFixed(1) + '%';
+
+    // 里程碑
+    const totalSec = Math.max(0, end - now);
+    document.getElementById('wks').textContent = Math.floor(totalSec/604800000);
+    document.getElementById('hrs').textContent = Math.floor(totalSec/3600000).toLocaleString();
+    document.getElementById('sleeps').textContent = Math.ceil(totalSec/86400000);
+    document.getElementById('cups').textContent = Math.floor(totalSec/86400000*0.5);
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  /* ---------- 彩带物理 ---------- */
+  const canvas = document.getElementById('confetti');
+  const ctx = canvas.getContext('2d');
+  const COLORS = ['#F5CAC3','#84A59D','#F2CC8F','#E07856','#B4586B'];
+  let parts = [];
+  function resize(){ canvas.width = innerWidth; canvas.height = innerHeight; }
+  addEventListener('resize', resize); resize();
+
+  function burst(x, y, n){
+    for(let i=0;i<n;i++){
+      parts.push({
+        x, y,
+        vx:(Math.random()-0.5)*14,
+        vy:-(4+Math.random()*9),
+        w:5+Math.random()*7, h:8+Math.random()*8,
+        rot:Math.random()*Math.PI*2,
+        vr:(Math.random()-0.5)*0.3,
+        color:COLORS[(Math.random()*COLORS.length)|0],
+        life:1, decay:0.004+Math.random()*0.006,
+        wob:Math.random()*Math.PI*2
+      });
+    }
+  }
+  function loop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    parts = parts.filter(p=>p.life>0);
+    for(const p of parts){
+      p.vy += 0.16;                 // 重力
+      p.vx *= 0.992;                // 空气阻力
+      p.vy *= 0.995;
+      p.wob += 0.15;
+      p.x += p.vx + Math.sin(p.wob)*0.8; // 飘落摆动
+      p.y += p.vy;
+      p.rot += p.vr;
+      p.life -= p.decay;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, p.life);
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h*Math.abs(Math.sin(p.wob))*0.6+0.4*p.h);
+      ctx.restore();
+    }
+    requestAnimationFrame(loop);
+  }
+  loop();
+
+  addEventListener('pointerdown', e => burst(e.clientX, e.clientY, 90));
+
+  // 开场撒花
+  setTimeout(()=>{ burst(innerWidth/2, innerHeight*0.28, 130); }, 500);
+
+  function celebrate(){
+    let k=0;
+    const iv = setInterval(()=>{
+      burst(Math.random()*innerWidth, innerHeight*0.2, 80);
+      if(++k>9) clearInterval(iv);
+    }, 450);
+  }
+})();
+</script>
+</body>
+</html>
